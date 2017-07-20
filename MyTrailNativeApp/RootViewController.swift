@@ -36,6 +36,8 @@ class RootViewController : UITableViewController, SFRestDelegate
         super.loadView()
         self.title = "Mobile SDK Sample App"
         
+        ModelInterface.instance.getAllAccounts()
+        
         //Here we use a query that should work on either Force.com or Database.com
         let request = SFRestAPI.sharedInstance().request(forQuery:"SELECT Name,AccountNumber FROM Account LIMIT 10");
         SFRestAPI.sharedInstance().send(request, delegate: self);

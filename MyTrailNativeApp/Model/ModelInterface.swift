@@ -12,13 +12,38 @@ import SmartStore
 
 
 class ModelInterface{
-    lazy var instance = ModelInterface()
+    static var instance = ModelInterface()
     
-    var store: SFSmartStore? = nil
-    var globalStore: SFSmartStore? = nil
+    var store: SFSmartStore = SFSmartStore.sharedStore(withName: kDefaultSmartStoreName) as! SFSmartStore
+    var globalStore: SFSmartStore = SFSmartStore.sharedGlobalStore(withName: kDefaultSmartStoreName) as! SFSmartStore
     
     private init() {
-        self.store = SFSmartStore.sharedStore(withName: kDefaultSmartStoreName) as! SFSmartStore
-        self.globalStore = SFSmartStore.sharedGlobalStore(withName: kDefaultSmartStoreName) as! SFSmartStore
+    }
+    
+    
+    //MARK: Get accounts
+    func getAllAccounts(){
+        Account.registerSoupInTheStore()
+
+        let restAPI = SFRestAPI.sharedInstance()
+        let request = restAPI.request(forQuery: Account.getQuery)
+        
+        restAPI.send(request,
+                     fail: { error in
+                        print("\(#function): fail, error:\(error)")
+        },
+                     complete: { response in
+                        if let responseDict = response as? [String:Any],
+                            let records = responseDict["records"] as? [[String:Any]]{
+                            for record in records{
+                                self.store.upsertEntries([record],
+                                                         toSoup: kAccountSoupName)
+                            }
+                        }
+                        print("\(#function): response:\(response): self.store:\(self.store)")
+                        
+        })
     }
 }
+
+
