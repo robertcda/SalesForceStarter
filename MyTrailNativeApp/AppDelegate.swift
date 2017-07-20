@@ -25,6 +25,8 @@
 import Foundation
 import UIKit
 import SalesforceSDKCore
+import SmartStore
+
 
 // Fill these in when creating a new Connected Application on Force.com
 let RemoteAccessConsumerKey = "3MVG9d8..z.hDcPIDoCBgcVqOKnWrVmjXhSZxfmhsZXNyoa__bm7.1k5HKIfNV7kn9XlvTqoyK9Gs7CiOeQ.6";

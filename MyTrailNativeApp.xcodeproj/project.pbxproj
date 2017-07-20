@@ -15,6 +15,7 @@
 		CEA8CA041F071B2300448B51 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA8CA031F071B2300448B51 /* Images.xcassets */; };
 		E11C6EC01F2072EB00B5CC3C /* NameDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11C6EBF1F2072EB00B5CC3C /* NameDetailsViewController.swift */; };
 		E11C6EC21F20730900B5CC3C /* nameDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E11C6EC11F20730900B5CC3C /* nameDetails.storyboard */; };
+		E1D424861F20BF1F00B4716E /* ModelInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D424851F20BF1F00B4716E /* ModelInterface.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		CEA8CA031F071B2300448B51 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "mobile_sdk/salesforcemobilesdk-ios/shared/resources/Images.xcassets"; sourceTree = SOURCE_ROOT; };
 		E11C6EBF1F2072EB00B5CC3C /* NameDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NameDetailsViewController.swift; path = NameDetails/NameDetailsViewController.swift; sourceTree = "<group>"; };
 		E11C6EC11F20730900B5CC3C /* nameDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = nameDetails.storyboard; path = NameDetails/nameDetails.storyboard; sourceTree = "<group>"; };
+		E1D424851F20BF1F00B4716E /* ModelInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelInterface.swift; path = Model/ModelInterface.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +88,7 @@
 		4FD6C4A11B755265002F9F90 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				E1D424841F20BEFE00B4716E /* Model */,
 				E11C6EBE1F2072C900B5CC3C /* NameDetails */,
 				4FD6C49A1B755242002F9F90 /* Bridging-Header.h */,
 				4FD6C49C1B755242002F9F90 /* RootViewController.swift */,
@@ -120,6 +123,14 @@
 				E11C6EC11F20730900B5CC3C /* nameDetails.storyboard */,
 			);
 			name = NameDetails;
+			sourceTree = "<group>";
+		};
+		E1D424841F20BEFE00B4716E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				E1D424851F20BF1F00B4716E /* ModelInterface.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,6 +281,7 @@
 				E11C6EC01F2072EB00B5CC3C /* NameDetailsViewController.swift in Sources */,
 				4F393A291C3C8BCD00B3EA13 /* main.swift in Sources */,
 				4FD6C4A01B755242002F9F90 /* InitialViewController.swift in Sources */,
+				E1D424861F20BF1F00B4716E /* ModelInterface.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

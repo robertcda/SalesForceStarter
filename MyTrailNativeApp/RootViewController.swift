@@ -37,7 +37,7 @@ class RootViewController : UITableViewController, SFRestDelegate
         self.title = "Mobile SDK Sample App"
         
         //Here we use a query that should work on either Force.com or Database.com
-        let request = SFRestAPI.sharedInstance().request(forQuery:"SELECT Name FROM User LIMIT 10");
+        let request = SFRestAPI.sharedInstance().request(forQuery:"SELECT Name,AccountNumber FROM Account LIMIT 10");
         SFRestAPI.sharedInstance().send(request, delegate: self);
     }
     
@@ -98,14 +98,22 @@ class RootViewController : UITableViewController, SFRestDelegate
         // Configure the cell to show the data.
         let obj = dataRows[indexPath.row]
         cell!.textLabel!.text = obj["Name"] as? String
-        
+        cell?.detailTextLabel?.text = obj["AccountNumber"] as? String
         // This adds the arrow to the right hand side.
         cell?.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         
         return cell!
     }
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        super.tableView(tableView, didSelectRowAt: indexPath)
+        //super.tableView(tableView, didSelectRowAt: indexPath)
+        
+        let storyBoard = UIStoryboard.init(name: "nameDetails", bundle: nil)
+        if let detailView = storyBoard.instantiateInitialViewController() as? NameDetailsViewController{
+            self.navigationController?.pushViewController(detailView, animated: true)
+            let obj = dataRows[indexPath.row]
+            detailView.accountNumber = obj["AccountNumber"] as? String
+        }
+        
         
     }
 }
