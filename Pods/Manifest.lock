@@ -1,0 +1,70 @@
+PODS:
+  - CocoaLumberjack (2.4.0):
+    - CocoaLumberjack/Default (= 2.4.0)
+    - CocoaLumberjack/Extensions (= 2.4.0)
+  - CocoaLumberjack/Core (2.4.0)
+  - CocoaLumberjack/Default (2.4.0):
+    - CocoaLumberjack/Core
+  - CocoaLumberjack/Extensions (2.4.0):
+    - CocoaLumberjack/Default
+  - SalesforceAnalytics (5.2.0):
+    - SalesforceAnalytics/SalesforceAnalytics (= 5.2.0)
+  - SalesforceAnalytics/SalesforceAnalytics (5.2.0):
+    - CocoaLumberjack (~> 2.4.0)
+  - SalesforceSDKCore (5.2.0):
+    - SalesforceSDKCore/SalesforceSDKCore (= 5.2.0)
+  - SalesforceSDKCore/SalesforceSDKCore (5.2.0):
+    - SalesforceAnalytics
+    - SalesforceSDKCore/SalesforceSDKCore/arc (= 5.2.0)
+    - SalesforceSDKCore/SalesforceSDKCore/base (= 5.2.0)
+    - SalesforceSDKCore/SalesforceSDKCore/no-arc (= 5.2.0)
+  - SalesforceSDKCore/SalesforceSDKCore/arc (5.2.0):
+    - SalesforceAnalytics
+    - SalesforceSDKCore/SalesforceSDKCore/base
+    - SalesforceSDKCore/SalesforceSDKCore/no-arc
+  - SalesforceSDKCore/SalesforceSDKCore/base (5.2.0):
+    - SalesforceAnalytics
+  - SalesforceSDKCore/SalesforceSDKCore/no-arc (5.2.0):
+    - SalesforceAnalytics
+    - SalesforceSDKCore/SalesforceSDKCore/base
+  - SmartStore (5.2.0):
+    - SmartStore/SmartStore (= 5.2.0)
+  - SmartStore/SmartStore (5.2.0):
+    - SalesforceSDKCore
+    - SQLCipher/fts (~> 3.4.0)
+  - SmartSync (5.2.0):
+    - SmartSync/SmartSync (= 5.2.0)
+  - SmartSync/SmartSync (5.2.0):
+    - SalesforceSDKCore
+    - SmartStore
+  - SQLCipher/common (3.4.1)
+  - SQLCipher/fts (3.4.1):
+    - SQLCipher/common
+
+DEPENDENCIES:
+  - SalesforceAnalytics (from `mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SalesforceSDKCore (from `mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SmartStore (from `mobile_sdk/SalesforceMobileSDK-iOS`)
+  - SmartSync (from `mobile_sdk/SalesforceMobileSDK-iOS`)
+
+EXTERNAL SOURCES:
+  SalesforceAnalytics:
+    :path: mobile_sdk/SalesforceMobileSDK-iOS
+  SalesforceSDKCore:
+    :path: mobile_sdk/SalesforceMobileSDK-iOS
+  SmartStore:
+    :path: mobile_sdk/SalesforceMobileSDK-iOS
+  SmartSync:
+    :path: mobile_sdk/SalesforceMobileSDK-iOS
+
+SPEC CHECKSUMS:
+  CocoaLumberjack: aa9dcab71bdf9eaf2a63bbd9ddc87863efe45457
+  SalesforceAnalytics: 9c415d350f3acf6f41d45077436226c4b19008d1
+  SalesforceSDKCore: f2523c9d55e2cc719f188d9dc4bf2362de9b7762
+  SmartStore: 4c0a568644008ff0f876791df162f4be51a8a5fa
+  SmartSync: 822e24b5d7de8b7d105441121ec5503bda70441b
+  SQLCipher: 43d12c0eb9c57fb438749618fc3ce0065509a559
+
+PODFILE CHECKSUM: 3298d1458fbd1ee40012387cc3f27edfac282d8a
+
+COCOAPODS: 1.2.1
