@@ -26,6 +26,7 @@ class ModelInterface{
     typealias AccountsHandler = ([Account]?)->Void
     
     func accounts(accountsHandler:@escaping AccountsHandler){
+        print("ModelInterface:\(#function)")
         // First check if the soup is available locally
         
         if Account.isSoupLoaded(store: self.store){
@@ -42,6 +43,7 @@ class ModelInterface{
     }
     
     func reloadAccountsFromNetwork(completion:@escaping SimpleBlock){
+        print("ModelInterface:\(#function)")
         Account.executeGetAccounts(store: self.store, completion: completion)
     }
 }

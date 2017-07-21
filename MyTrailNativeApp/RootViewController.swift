@@ -50,6 +50,7 @@ class RootViewController : UITableViewController, SFRestDelegate
         // Get all the accounts data.
         self.initializeAccountsModel()
         self.initializeinspectorBarButton()
+        self.initializeRefreshBarButton()
     }
     
     //MARK:- Store Inspector
@@ -84,6 +85,27 @@ class RootViewController : UITableViewController, SFRestDelegate
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
+        }
+    }
+    
+    //MARK: Refresh
+    func initializeRefreshBarButton(){
+        // Configure Inspector Bar Button
+        let button = UIButton(type: .custom)
+        button.setImage(#imageLiteral(resourceName: "refresh"), for: .normal)
+        button.addTarget(self,
+                         action: #selector(refresh),
+                         for: UIControlEvents.touchUpInside)
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 35)
+        let inspectorBarButton = UIBarButtonItem(customView: button)
+        
+        self.navigationItem.leftBarButtonItems = [inspectorBarButton]
+    }
+    func refresh(){
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        ModelInterface.instance.reloadAccountsFromNetwork {
+            self.initializeAccountsModel()
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
     }
     /*

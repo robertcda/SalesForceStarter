@@ -57,6 +57,7 @@ class Account {
     }
 
     class func registerSoupInTheStore(store:SFSmartStore){
+        print("Account:\(#function)")
         if self.isSoupLoaded(store: store) == false{
             
             var indexSpecs:[SFSoupIndex] = []
@@ -85,7 +86,8 @@ class Account {
     
     //MARK: JSON to Account
     
-    class func createAccounts(accountsJSONArray:[[String:Any]]) -> [Account]{
+    class func createAccountsWithJSON(accountsJSONArray:[[String:Any]]) -> [Account]{
+        print("Account:\(#function)")
         var accounts = [Account]()
         for accountDict in accountsJSONArray{
             if let account = Account(accountInfoDict: accountDict){
@@ -112,17 +114,21 @@ class Account {
     class func executeGetAccounts(store: SFSmartStore,
                             completion: @escaping SimpleBlock,
                             errorCompletion: SimpleBlock? = nil){
+        print("Account:\(#function)")
         Account.registerSoupInTheStore(store: store)
         
         let restAPI = SFRestAPI.sharedInstance()
         let request = restAPI.request(forQuery: Account.getQuery)
         
+        
         restAPI.send(request,
                      fail: { error in
                         print("\(#function): fail, error:\(error)")
+                        print("Account:\(#function): ErrorBlock")
                         errorCompletion?()
         },
                      complete: { response in
+                        print("Account:\(#function): CompletionBlock")
                         if let responseDict = response as? [String:Any],
                             let records = responseDict["records"] as? [[String:Any]]{
                             for record in records{
@@ -143,14 +149,14 @@ class Account {
     
     //MARK: LOCAL Get accounts
     class func getAccountsFromStore(store:SFSmartStore)->[Account]?{
-        
+        print("Account:\(#function)")
         let query = SFQuerySpec.newAllQuerySpec(Account.soupName,
                                                 withOrderPath: Account.Attributes.name.path,
                                                 with: SFSoupQuerySortOrder.ascending,
                                                 withPageSize: 100)
         do {
             let accuntsJsonArray = try store.query(with: query, pageIndex: 0)
-            let accounts = Account.createAccounts(accountsJSONArray: accuntsJsonArray as! [[String:Any]])
+            let accounts = Account.createAccountsWithJSON(accountsJSONArray: accuntsJsonArray as! [[String:Any]])
             return accounts
         }catch let e{
             print("\(#function): Error:\(e)")
