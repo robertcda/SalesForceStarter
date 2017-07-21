@@ -10,6 +10,7 @@ import Foundation
 import SalesforceSDKCore
 import SmartStore
 
+typealias SimpleBlock = ()->Void
 
 class ModelInterface{
     static var instance = ModelInterface()
@@ -21,55 +22,27 @@ class ModelInterface{
         //self.store.removeAllSoups()
     }
     
+    //MARK: Accounts Interface
+    typealias AccountsHandler = ([Account]?)->Void
     
-    //MARK: Get accounts
-    typealias SimpleBlock = ()->Void
-    func executeGetAccounts(completion: @escaping SimpleBlock, errorCompletion: SimpleBlock? = nil){
-        Account.registerSoupInTheStore()
+    func accounts(accountsHandler:@escaping AccountsHandler){
+        // First check if the soup is available locally
         
-        let restAPI = SFRestAPI.sharedInstance()
-        let request = restAPI.request(forQuery: Account.getQuery)
-        
-        restAPI.send(request,
-                     fail: { error in
-                        print("\(#function): fail, error:\(error)")
-                        errorCompletion?()
-        },
-                     complete: { response in
-                        if let responseDict = response as? [String:Any],
-                            let records = responseDict["records"] as? [[String:Any]]{
-                            for record in records{
-                                do {
-                                    try self.store.upsertEntries([record],
-                                                             toSoup: kAccountSoupName,
-                                                             withExternalIdPath: Account.Attributes.accountNumber.path)
-                                }catch let error{
-                                    print("\(#function): error:\(error):")
-                                }
-                                
-                            }
-                        }
-                        print("\(#function): response:\(response): self.store:\(self.store)")
-                        completion()
-                        
-        })
+        if Account.isSoupLoaded(store: self.store){
+            
+            // If it is loaded then get the Accounts from the local store.
+            accountsHandler(Account.getAccountsFromStore(store: self.store))
+            
+        }else{
+            // If soup is not loaded then we get the Accounts from the network.
+            self.reloadAccountsFromNetwork {
+                accountsHandler(Account.getAccountsFromStore(store: self.store))
+            }
+        }
     }
     
-    func getAllAccounts(completion:@escaping ([Account]?)->Void){
-        self.executeGetAccounts(completion: {
-            let query = SFQuerySpec.newAllQuerySpec(kAccountSoupName,
-                                                    withOrderPath: Account.Attributes.name.path,
-                                                    with: SFSoupQuerySortOrder.ascending,
-                                                    withPageSize: 100)
-            do {
-                let accuntsJsonArray = try self.store.query(with: query, pageIndex: 0)
-                let accounts = Account.createAccounts(accountsJSONArray: accuntsJsonArray as! [[String:Any]])
-                completion(accounts)
-            }catch let e{
-                print("\(#function): Error:\(e)")
-                completion(nil)
-            }
-        })
+    func reloadAccountsFromNetwork(completion:@escaping SimpleBlock){
+        Account.executeGetAccounts(store: self.store, completion: completion)
     }
 }
 

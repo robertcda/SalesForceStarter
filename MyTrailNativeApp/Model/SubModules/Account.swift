@@ -10,11 +10,8 @@ import Foundation
 import SalesforceSDKCore
 import SmartStore
 
-let kAccountSoupName = "AccountSoup"
-
-
 class Account {
-    
+    static let soupName = "AccountSoup"
     //MARK: - Attribute constants.
     enum Attributes{
         case name, accountNumber
@@ -32,6 +29,13 @@ class Account {
             switch self {
             case .name,.accountNumber:
                 return kSoupIndexTypeString
+                /*
+                return kSoupIndexTypeInteger
+                return kSoupIndexTypeInteger
+                return kSoupIndexTypeFloating
+                return kSoupIndexTypeFullText
+                return kSoupIndexTypeJSON1
+                 */
             }
         }
     }
@@ -43,9 +47,17 @@ class Account {
     static let getQuery: String = "SELECT Name,AccountNumber FROM Account"
     
     //MARK: Soup Registering
-    class func registerSoupInTheStore(){
-        let store = ModelInterface.instance.store
-        if store.soupExists(kAccountSoupName) == false{
+    
+    class func isSoupLoaded(store:SFSmartStore) -> Bool{
+        if store.soupExists(Account.soupName){
+            return true
+        }else{
+            return false
+        }
+    }
+
+    class func registerSoupInTheStore(store:SFSmartStore){
+        if self.isSoupLoaded(store: store) == false{
             
             var indexSpecs:[SFSoupIndex] = []
             
@@ -62,7 +74,7 @@ class Account {
 
             
             do{
-                try store.registerSoup(kAccountSoupName,
+                try store.registerSoup(Account.soupName,
                                        withIndexSpecs: indexSpecs,
                                        error: ())
             }catch let error{
@@ -96,4 +108,54 @@ class Account {
 
     }
     
+    //MARK: NETWORK Get accounts
+    class func executeGetAccounts(store: SFSmartStore,
+                            completion: @escaping SimpleBlock,
+                            errorCompletion: SimpleBlock? = nil){
+        Account.registerSoupInTheStore(store: store)
+        
+        let restAPI = SFRestAPI.sharedInstance()
+        let request = restAPI.request(forQuery: Account.getQuery)
+        
+        restAPI.send(request,
+                     fail: { error in
+                        print("\(#function): fail, error:\(error)")
+                        errorCompletion?()
+        },
+                     complete: { response in
+                        if let responseDict = response as? [String:Any],
+                            let records = responseDict["records"] as? [[String:Any]]{
+                            for record in records{
+                                do {
+                                    try store.upsertEntries([record],
+                                                                 toSoup: Account.soupName,
+                                                                 withExternalIdPath: Account.Attributes.accountNumber.path)
+                                }catch let error{
+                                    print("\(#function): error:\(error):")
+                                }
+                                
+                            }
+                        }
+                        completion()
+                        
+        })
+    }
+    
+    //MARK: LOCAL Get accounts
+    class func getAccountsFromStore(store:SFSmartStore)->[Account]?{
+        
+        let query = SFQuerySpec.newAllQuerySpec(Account.soupName,
+                                                withOrderPath: Account.Attributes.name.path,
+                                                with: SFSoupQuerySortOrder.ascending,
+                                                withPageSize: 100)
+        do {
+            let accuntsJsonArray = try store.query(with: query, pageIndex: 0)
+            let accounts = Account.createAccounts(accountsJSONArray: accuntsJsonArray as! [[String:Any]])
+            return accounts
+        }catch let e{
+            print("\(#function): Error:\(e)")
+            return nil
+        }
+    }
+    // Mark:
 }

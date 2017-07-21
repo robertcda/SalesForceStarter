@@ -48,16 +48,7 @@ class RootViewController : UITableViewController, SFRestDelegate
         super.viewDidLoad()
         
         // Get all the accounts data.
-        ModelInterface.instance.getAllAccounts(){ accounts in
-            self.dataRows.removeAll()
-            if let accounts = accounts{
-                self.dataRows.append(contentsOf: accounts)
-            }
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
-        }
-        
+        self.initializeAccountsModel()
         self.initializeinspectorBarButton()
     }
     
@@ -81,7 +72,19 @@ class RootViewController : UITableViewController, SFRestDelegate
         button.frame = CGRect(x: 0, y: 0, width: 35, height: 35)
         let inspectorBarButton = UIBarButtonItem(customView: button)
         
-        self.navigationItem.rightBarButtonItem = inspectorBarButton
+        self.navigationItem.rightBarButtonItems = [inspectorBarButton]
+    }
+    //MARK: - Initialize Accounts
+    func initializeAccountsModel(){
+        ModelInterface.instance.accounts(){ accounts in
+            self.dataRows.removeAll()
+            if let accounts = accounts{
+                self.dataRows.append(contentsOf: accounts)
+            }
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+        }
     }
     /*
     // MARK: - SFRestDelegate
