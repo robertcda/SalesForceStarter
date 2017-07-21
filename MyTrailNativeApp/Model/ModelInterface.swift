@@ -48,20 +48,20 @@ class ModelInterface{
         })
     }
     
-    func getAllAccounts(completion:([Account])->Void){
+    func getAllAccounts(completion:@escaping ([Account]?)->Void){
         self.executeGetAccounts(completion: {
             let query = SFQuerySpec.newAllQuerySpec(kAccountSoupName,
                                                     withOrderPath: Account.Attributes.name.path,
                                                     with: SFSoupQuerySortOrder.ascending,
                                                     withPageSize: 100)
             do {
-                let result = try self.store.query(with: query, pageIndex: 0)
-                print("result:\(result)")
+                let accuntsJsonArray = try self.store.query(with: query, pageIndex: 0)
+                let accounts = Account.createAccounts(accountsJSONArray: accuntsJsonArray as! [[String:Any]])
+                completion(accounts)
             }catch let e{
                 print("\(#function): Error:\(e)")
+                completion(nil)
             }
-            
-            
         })
     }
 }

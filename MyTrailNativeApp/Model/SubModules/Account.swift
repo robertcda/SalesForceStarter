@@ -68,7 +68,29 @@ class Account {
         }
     }
     
-    //MARK: JSON to Account 
+    //MARK: JSON to Account
     
+    class func createAccounts(accountsJSONArray:[[String:Any]]) -> [Account]{
+        var accounts = [Account]()
+        for accountDict in accountsJSONArray{
+            if let account = Account(accountInfoDict: accountDict){
+                accounts.append(account)
+            }
+        }
+        return accounts
+    }
+    
+    init?(accountInfoDict:[String:Any]) {
+        guard let name = accountInfoDict[Account.Attributes.name.path] as? String else{
+            return nil
+        }
+        self.name = name
+        
+        guard let accountNumber = accountInfoDict[Account.Attributes.accountNumber.path] as? String else{
+            return nil
+        }
+        self.accountNumber = accountNumber
+
+    }
     
 }

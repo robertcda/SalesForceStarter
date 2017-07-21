@@ -49,7 +49,10 @@ class RootViewController : UITableViewController, SFRestDelegate
         
         ModelInterface.instance.getAllAccounts(){ accounts in
             self.dataRows.removeAll()
-            self.dataRows.append(contentsOf: accounts)
+            if let accounts = accounts{
+                self.dataRows.append(contentsOf: accounts)
+            }
+            self.tableView.reloadData()
         }
         
         
