@@ -49,9 +49,12 @@ class Account {
             
             var indexSpecs:[SFSoupIndex] = []
             
-            indexSpecs.append(SFSoupIndex(path: Account.Attributes.name.path,
-                                          indexType: Account.Attributes.name.type,
-                                          columnName: Account.Attributes.name.path))
+            if let nameIndex = SFSoupIndex(path: Account.Attributes.name.path,
+                                        indexType: Account.Attributes.name.type,
+                                        columnName: Account.Attributes.name.path){
+                indexSpecs.append(nameIndex)
+            }
+            
             
             indexSpecs.append(SFSoupIndex(path: Account.Attributes.accountNumber.path,
                                           indexType: Account.Attributes.accountNumber.type,

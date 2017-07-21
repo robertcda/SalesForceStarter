@@ -18,6 +18,7 @@ class ModelInterface{
     var globalStore: SFSmartStore = SFSmartStore.sharedGlobalStore(withName: kDefaultSmartStoreName) as! SFSmartStore
     
     private init() {
+        //self.store.removeAllSoups()
     }
     
     
@@ -38,8 +39,14 @@ class ModelInterface{
                         if let responseDict = response as? [String:Any],
                             let records = responseDict["records"] as? [[String:Any]]{
                             for record in records{
-                                self.store.upsertEntries([record],
-                                                         toSoup: kAccountSoupName)
+                                do {
+                                    try self.store.upsertEntries([record],
+                                                             toSoup: kAccountSoupName,
+                                                             withExternalIdPath: Account.Attributes.accountNumber.path)
+                                }catch let error{
+                                    print("\(#function): error:\(error):")
+                                }
+                                
                             }
                         }
                         print("\(#function): response:\(response): self.store:\(self.store)")

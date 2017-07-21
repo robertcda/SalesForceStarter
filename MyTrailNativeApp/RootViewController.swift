@@ -25,6 +25,7 @@
 import Foundation
 import UIKit
 import SalesforceSDKCore
+import SmartStore
 
 class RootViewController : UITableViewController, SFRestDelegate
 {
@@ -36,7 +37,6 @@ class RootViewController : UITableViewController, SFRestDelegate
         super.loadView()
         self.title = "Mobile SDK Sample App"
         
-        
         /*
         //Here we use a query that should work on either Force.com or Database.com
         let request = SFRestAPI.sharedInstance().request(forQuery:"SELECT Name,AccountNumber FROM Account LIMIT 10");
@@ -47,17 +47,42 @@ class RootViewController : UITableViewController, SFRestDelegate
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Get all the accounts data.
         ModelInterface.instance.getAllAccounts(){ accounts in
             self.dataRows.removeAll()
             if let accounts = accounts{
                 self.dataRows.append(contentsOf: accounts)
             }
-            self.tableView.reloadData()
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
         
-        
+        self.initializeinspectorBarButton()
     }
     
+    //MARK:- Store Inspector
+    func launchStoreInspector(){
+        // Start the Inspector.
+        if let inspector = SFSmartStoreInspectorViewController(store: ModelInterface.instance.store){
+            self.present(inspector, animated: true, completion: {
+                // Nothing
+            })
+        }
+    }
+    
+    func initializeinspectorBarButton(){
+        // Configure Inspector Bar Button
+        let button = UIButton(type: .custom)
+        button.setImage(#imageLiteral(resourceName: "icon_inspector"), for: .normal)
+        button.addTarget(self,
+                         action: #selector(launchStoreInspector),
+                         for: UIControlEvents.touchUpInside)
+        button.frame = CGRect(x: 0, y: 0, width: 35, height: 35)
+        let inspectorBarButton = UIBarButtonItem(customView: button)
+        
+        self.navigationItem.rightBarButtonItem = inspectorBarButton
+    }
     /*
     // MARK: - SFRestDelegate
     func request(_ request: SFRestRequest, didLoadResponse jsonResponse: Any)
