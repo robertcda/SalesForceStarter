@@ -12,45 +12,50 @@ import SmartStore
 
 let kAccountSoupName = "AccountSoup"
 
-enum AccountConstants{
-    case name, accountNumber
-    
-    var path: String{
-        switch self {
-        case .name:
-            return "Name"
-        case .accountNumber:
-            return "AccountNumber"
-        }
-    }
-    
-    var type: String{
-        switch self {
-        case .name,.accountNumber:
-            return kSoupIndexTypeString
-        }
-    }
-}
 
 class Account {
+    
+    //MARK: - Attribute constants.
+    enum Attributes{
+        case name, accountNumber
+        
+        var path: String{
+            switch self {
+            case .name:
+                return "Name"
+            case .accountNumber:
+                return "AccountNumber"
+            }
+        }
+        
+        var type: String{
+            switch self {
+            case .name,.accountNumber:
+                return kSoupIndexTypeString
+            }
+        }
+    }
+
+    //MARK: - Attributes declarations.
     var name: String?
     var accountNumber: String?
     
     static let getQuery: String = "SELECT Name,AccountNumber FROM Account"
     
+    //MARK: Soup Registering
     class func registerSoupInTheStore(){
         let store = ModelInterface.instance.store
         if store.soupExists(kAccountSoupName) == false{
             
             var indexSpecs:[SFSoupIndex] = []
             
-            indexSpecs.append(SFSoupIndex(path: AccountConstants.name.path,
-                                          indexType: AccountConstants.name.type,
-                                          columnName: AccountConstants.name.path))
+            indexSpecs.append(SFSoupIndex(path: Account.Attributes.name.path,
+                                          indexType: Account.Attributes.name.type,
+                                          columnName: Account.Attributes.name.path))
             
-            indexSpecs.append(SFSoupIndex(path: AccountConstants.accountNumber.path,
-                                          indexType: AccountConstants.accountNumber.type,
-                                          columnName: AccountConstants.accountNumber.path))
+            indexSpecs.append(SFSoupIndex(path: Account.Attributes.accountNumber.path,
+                                          indexType: Account.Attributes.accountNumber.type,
+                                          columnName: Account.Attributes.accountNumber.path))
 
             
             do{
@@ -62,4 +67,8 @@ class Account {
             }
         }
     }
+    
+    //MARK: JSON to Account 
+    
+    
 }

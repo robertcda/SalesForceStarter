@@ -28,7 +28,7 @@ import SalesforceSDKCore
 
 class RootViewController : UITableViewController, SFRestDelegate
 {
-    var dataRows = [NSDictionary]()
+    var dataRows = [Account]()
     
     // MARK: - View lifecycle
     override func loadView()
@@ -36,13 +36,26 @@ class RootViewController : UITableViewController, SFRestDelegate
         super.loadView()
         self.title = "Mobile SDK Sample App"
         
-        ModelInterface.instance.getAllAccounts()
         
+        /*
         //Here we use a query that should work on either Force.com or Database.com
         let request = SFRestAPI.sharedInstance().request(forQuery:"SELECT Name,AccountNumber FROM Account LIMIT 10");
         SFRestAPI.sharedInstance().send(request, delegate: self);
+         */
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        ModelInterface.instance.getAllAccounts(){ accounts in
+            self.dataRows.removeAll()
+            self.dataRows.append(contentsOf: accounts)
+        }
+        
+        
+    }
+    
+    /*
     // MARK: - SFRestDelegate
     func request(_ request: SFRestRequest, didLoadResponse jsonResponse: Any)
     {
@@ -70,7 +83,7 @@ class RootViewController : UITableViewController, SFRestDelegate
         SFSDKLogger.sharedDefaultInstance().log(type(of:self), level:.debug, message:"requestDidTimeout: \(request)")
         // Add your failed error handling here
     }
-    
+    */
     // MARK: - Table view data source
     func numberOfSectionsInTableView(tableView: UITableView) -> Int
     {
@@ -98,9 +111,9 @@ class RootViewController : UITableViewController, SFRestDelegate
         cell!.imageView!.image = image
         
         // Configure the cell to show the data.
-        let obj = dataRows[indexPath.row]
-        cell!.textLabel!.text = obj["Name"] as? String
-        cell?.detailTextLabel?.text = obj["AccountNumber"] as? String
+        let account = dataRows[indexPath.row]
+        cell!.textLabel!.text = account.name
+        cell?.detailTextLabel?.text = account.accountNumber
         // This adds the arrow to the right hand side.
         cell?.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
         
@@ -112,8 +125,8 @@ class RootViewController : UITableViewController, SFRestDelegate
         let storyBoard = UIStoryboard.init(name: "nameDetails", bundle: nil)
         if let detailView = storyBoard.instantiateInitialViewController() as? NameDetailsViewController{
             self.navigationController?.pushViewController(detailView, animated: true)
-            let obj = dataRows[indexPath.row]
-            detailView.accountNumber = obj["AccountNumber"] as? String
+            let account = dataRows[indexPath.row]
+            detailView.accountNumber = account.accountNumber
         }
         
         
