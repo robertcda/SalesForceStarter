@@ -141,6 +141,9 @@ class AccountDetailsViewController: UIViewController {
     
     func saveButtonClicked(){
         print("\(#function)")
+        self.modelObject?.update(completion: {
+            print("Account Update Completed")
+        })
     }
 }
 

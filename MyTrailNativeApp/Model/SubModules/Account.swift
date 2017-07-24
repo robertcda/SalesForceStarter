@@ -14,20 +14,19 @@ class Account {
     static let soupName = "AccountSoup"
     //MARK: - Attribute constants.
     enum Attributes{
-        case name, accountNumber
+        case Id, name, accountNumber
         
         var path: String{
             switch self {
-            case .name:
-                return "Name"
-            case .accountNumber:
-                return "AccountNumber"
+            case .Id:               return "Id"
+            case .name:             return "Name"
+            case .accountNumber:    return "AccountNumber"
             }
         }
         
         var type: String{
             switch self {
-            case .name,.accountNumber:
+            case .name,.accountNumber,.Id:
                 return kSoupIndexTypeString
                 /*
                 return kSoupIndexTypeInteger
@@ -41,9 +40,10 @@ class Account {
     }
 
     //MARK: Query
-    static let getQuery: String = "SELECT Name,AccountNumber FROM Account"
+    static let getQuery: String = "SELECT Id,Name,AccountNumber FROM Account"
 
     //MARK: - Attributes declarations.
+    private var _Id: String?
     private var _name: String?
     private var _accountNumber: String?
     
@@ -99,6 +99,14 @@ class Account {
             
             var indexSpecs:[SFSoupIndex] = []
             
+            
+            if let idIndex = SFSoupIndex(path: Account.Attributes.Id.path,
+                                           indexType: Account.Attributes.Id.type,
+                                           columnName: Account.Attributes.Id.path){
+                indexSpecs.append(idIndex)
+            }
+            
+            
             if let nameIndex = SFSoupIndex(path: Account.Attributes.name.path,
                                         indexType: Account.Attributes.name.type,
                                         columnName: Account.Attributes.name.path){
@@ -121,7 +129,8 @@ class Account {
         }
     }
     
-    //MARK: JSON to Account
+    //MARK:-
+    //MARK: JSON -> Account
     
     class func createAccountsWithJSON(accountsJSONArray:[[String:Any]]) -> [Account]{
         print("Account:\(#function)")
@@ -135,6 +144,13 @@ class Account {
     }
     
     init?(accountInfoDict:[String:Any]) {
+        
+        guard let idVal = accountInfoDict[Account.Attributes.Id.path] as? String else{
+            return nil
+        }
+        _Id = idVal
+
+        
         guard let name = accountInfoDict[Account.Attributes.name.path] as? String else{
             return nil
         }
@@ -147,6 +163,16 @@ class Account {
 
     }
     
+    //MARK: Account -> JSON
+    private func accountFields() -> [String:Any]{
+        var accountFields = [String:Any]()
+        accountFields[Account.Attributes.Id.path] = _Id
+        accountFields[Account.Attributes.accountNumber.path] = _accountNumber
+        accountFields[Account.Attributes.name.path] = _name
+        return accountFields
+    }
+    
+    //MARK:-
     //MARK: NETWORK Get accounts
     class func executeGetAccounts(store: SFSmartStore,
                             completion: @escaping SimpleBlock,
@@ -182,10 +208,38 @@ class Account {
                         
         })
     }
+    
+    //MARK: NETWORK PATCH/UPDATE
+    func update(completion: @escaping SimpleBlock,
+                errorCompletion: SimpleBlock? = nil){
+        let restAPI = SFRestAPI.sharedInstance()
+        
+        let updateRquest = restAPI.requestForUpdate(withObjectType: "Account",
+                                                    objectId: Account.Attributes.Id.path,
+                                                    fields: self.accountFields())
+        
+        restAPI.send(updateRquest,
+                     fail: { error in
+                        print("\(#function): fail, error:\(error)")
+                        print("Account:\(#function): ErrorBlock")
+                        errorCompletion?()
+        },
+                     complete: { response in
+                        print("Account:\(#function): CompletionBlock")
+                        completion()
+                        
+        })
+
+        
+    }
+
+    
     //MARK: NETWORK POST
     func post(){
         
     }
+    
+    //MARK:-
     
     //MARK: LOCAL Get accounts
     class func getAccountsFromStore(store:SFSmartStore)->[Account]?{
