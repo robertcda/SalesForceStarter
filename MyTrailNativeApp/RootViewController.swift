@@ -175,8 +175,8 @@ class RootViewController : UITableViewController, SFRestDelegate
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //super.tableView(tableView, didSelectRowAt: indexPath)
         
-        let storyBoard = UIStoryboard.init(name: "nameDetails", bundle: nil)
-        if let detailView = storyBoard.instantiateInitialViewController() as? NameDetailsViewController{
+        let storyBoard = UIStoryboard.init(name: "AccountDetails", bundle: nil)
+        if let detailView = storyBoard.instantiateInitialViewController() as? AccountDetailsViewController{
             self.navigationController?.pushViewController(detailView, animated: true)
             let account = dataRows[indexPath.row]
             detailView.accountNumber = account.accountNumber

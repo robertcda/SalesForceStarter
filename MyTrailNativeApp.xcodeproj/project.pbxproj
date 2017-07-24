@@ -13,8 +13,10 @@
 		4FD6C4A01B755242002F9F90 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD6C49D1B755242002F9F90 /* InitialViewController.swift */; };
 		78A235BD93AB7D080D67CD51 /* Pods_MyTrailNativeApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82A29C75280BDF73123F14B4 /* Pods_MyTrailNativeApp.framework */; };
 		CEA8CA041F071B2300448B51 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEA8CA031F071B2300448B51 /* Images.xcassets */; };
-		E11C6EC01F2072EB00B5CC3C /* NameDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11C6EBF1F2072EB00B5CC3C /* NameDetailsViewController.swift */; };
-		E11C6EC21F20730900B5CC3C /* nameDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E11C6EC11F20730900B5CC3C /* nameDetails.storyboard */; };
+		E11C6EC01F2072EB00B5CC3C /* AccountDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E11C6EBF1F2072EB00B5CC3C /* AccountDetailsViewController.swift */; };
+		E11C6EC21F20730900B5CC3C /* AccountDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E11C6EC11F20730900B5CC3C /* AccountDetails.storyboard */; };
+		E1A6BCE71F221861000C9146 /* AttributeDetailCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1A6BCE51F221861000C9146 /* AttributeDetailCell.swift */; };
+		E1A6BCE81F221861000C9146 /* AttributeDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = E1A6BCE61F221861000C9146 /* AttributeDetailCell.xib */; };
 		E1D424861F20BF1F00B4716E /* ModelInterface.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D424851F20BF1F00B4716E /* ModelInterface.swift */; };
 		E1D424891F20C13500B4716E /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D424881F20C13500B4716E /* Account.swift */; };
 /* End PBXBuildFile section */
@@ -32,8 +34,10 @@
 		762732C14CFE40A989C3AD70 /* Pods-MyTrailNativeApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyTrailNativeApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyTrailNativeApp/Pods-MyTrailNativeApp.debug.xcconfig"; sourceTree = "<group>"; };
 		82A29C75280BDF73123F14B4 /* Pods_MyTrailNativeApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MyTrailNativeApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEA8CA031F071B2300448B51 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "mobile_sdk/salesforcemobilesdk-ios/shared/resources/Images.xcassets"; sourceTree = SOURCE_ROOT; };
-		E11C6EBF1F2072EB00B5CC3C /* NameDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NameDetailsViewController.swift; path = NameDetails/NameDetailsViewController.swift; sourceTree = "<group>"; };
-		E11C6EC11F20730900B5CC3C /* nameDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = nameDetails.storyboard; path = NameDetails/nameDetails.storyboard; sourceTree = "<group>"; };
+		E11C6EBF1F2072EB00B5CC3C /* AccountDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AccountDetailsViewController.swift; path = NameDetails/AccountDetailsViewController.swift; sourceTree = "<group>"; };
+		E11C6EC11F20730900B5CC3C /* AccountDetails.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = AccountDetails.storyboard; path = NameDetails/AccountDetails.storyboard; sourceTree = "<group>"; };
+		E1A6BCE51F221861000C9146 /* AttributeDetailCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AttributeDetailCell.swift; path = NameDetails/AttributeDetailCell.swift; sourceTree = "<group>"; };
+		E1A6BCE61F221861000C9146 /* AttributeDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = AttributeDetailCell.xib; path = NameDetails/AttributeDetailCell.xib; sourceTree = "<group>"; };
 		E1D424851F20BF1F00B4716E /* ModelInterface.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ModelInterface.swift; path = Model/ModelInterface.swift; sourceTree = "<group>"; };
 		E1D424881F20C13500B4716E /* Account.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Account.swift; path = Model/SubModules/Account.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -91,7 +95,7 @@
 			isa = PBXGroup;
 			children = (
 				E1D424841F20BEFE00B4716E /* Model */,
-				E11C6EBE1F2072C900B5CC3C /* NameDetails */,
+				E11C6EBE1F2072C900B5CC3C /* AccountDetails */,
 				4FD6C49A1B755242002F9F90 /* Bridging-Header.h */,
 				4FD6C49C1B755242002F9F90 /* RootViewController.swift */,
 				4FD6C49D1B755242002F9F90 /* InitialViewController.swift */,
@@ -118,13 +122,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		E11C6EBE1F2072C900B5CC3C /* NameDetails */ = {
+		E11C6EBE1F2072C900B5CC3C /* AccountDetails */ = {
 			isa = PBXGroup;
 			children = (
-				E11C6EBF1F2072EB00B5CC3C /* NameDetailsViewController.swift */,
-				E11C6EC11F20730900B5CC3C /* nameDetails.storyboard */,
+				E11C6EBF1F2072EB00B5CC3C /* AccountDetailsViewController.swift */,
+				E11C6EC11F20730900B5CC3C /* AccountDetails.storyboard */,
+				E1A6BCE51F221861000C9146 /* AttributeDetailCell.swift */,
+				E1A6BCE61F221861000C9146 /* AttributeDetailCell.xib */,
 			);
-			name = NameDetails;
+			name = AccountDetails;
 			sourceTree = "<group>";
 		};
 		E1D424841F20BEFE00B4716E /* Model */ = {
@@ -211,7 +217,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E11C6EC21F20730900B5CC3C /* nameDetails.storyboard in Resources */,
+				E11C6EC21F20730900B5CC3C /* AccountDetails.storyboard in Resources */,
+				E1A6BCE81F221861000C9146 /* AttributeDetailCell.xib in Resources */,
 				CEA8CA041F071B2300448B51 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -289,7 +296,8 @@
 			files = (
 				4FD6C47A1B754AF1002F9F90 /* AppDelegate.swift in Sources */,
 				4FD6C49F1B755242002F9F90 /* RootViewController.swift in Sources */,
-				E11C6EC01F2072EB00B5CC3C /* NameDetailsViewController.swift in Sources */,
+				E11C6EC01F2072EB00B5CC3C /* AccountDetailsViewController.swift in Sources */,
+				E1A6BCE71F221861000C9146 /* AttributeDetailCell.swift in Sources */,
 				4F393A291C3C8BCD00B3EA13 /* main.swift in Sources */,
 				4FD6C4A01B755242002F9F90 /* InitialViewController.swift in Sources */,
 				E1D424861F20BF1F00B4716E /* ModelInterface.swift in Sources */,

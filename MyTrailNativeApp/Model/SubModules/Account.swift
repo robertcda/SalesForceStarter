@@ -120,7 +120,6 @@ class Account {
         let restAPI = SFRestAPI.sharedInstance()
         let request = restAPI.request(forQuery: Account.getQuery)
         
-        
         restAPI.send(request,
                      fail: { error in
                         print("\(#function): fail, error:\(error)")
@@ -145,6 +144,10 @@ class Account {
                         completion()
                         
         })
+    }
+    //MARK: NETWORK POST
+    func post(){
+        
     }
     
     //MARK: LOCAL Get accounts

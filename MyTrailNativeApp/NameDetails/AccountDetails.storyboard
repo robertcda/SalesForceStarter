@@ -9,10 +9,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Name Details View Controller-->
+        <!--Account Details View Controller-->
         <scene sceneID="mit-2x-2pQ">
             <objects>
-                <viewController id="5rU-MW-VKj" customClass="NameDetailsViewController" customModule="MyTrailNativeApp" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="5rU-MW-VKj" customClass="AccountDetailsViewController" customModule="MyTrailNativeApp" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="xiD-lq-zRa"/>
                         <viewControllerLayoutGuide type="bottom" id="6Dq-uh-tYL"/>

@@ -9,7 +9,7 @@
 import UIKit
 import SalesforceSDKCore
 
-class NameDetailsViewController: UIViewController {
+class AccountDetailsViewController: UIViewController {
 
     var accountNumber:String? = nil
     var accountInformationArray:[(key:String,value:String)] = []
@@ -47,7 +47,7 @@ class NameDetailsViewController: UIViewController {
 
 }
 
-extension NameDetailsViewController:UITableViewDataSource{
+extension AccountDetailsViewController:UITableViewDataSource{
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -70,7 +70,7 @@ extension NameDetailsViewController:UITableViewDataSource{
 }
 
 //MARK: - SFDelegate
-extension NameDetailsViewController:SFRestDelegate{
+extension AccountDetailsViewController:SFRestDelegate{
     // MARK: - SFRestDelegate
     func request(_ request: SFRestRequest, didLoadResponse jsonResponse: Any)
     {
