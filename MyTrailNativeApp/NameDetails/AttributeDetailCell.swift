@@ -63,6 +63,11 @@ extension AttributeDetailCell: UITextFieldDelegate{
         return true
     }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        if let textVal = textField.text{
+            self.attributeData?.value = textVal
+        }
+
         return true
     }
     @available(iOS 10.0, *)

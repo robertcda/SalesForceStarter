@@ -47,7 +47,15 @@ class Account {
     private var _name: String?
     private var _accountNumber: String?
     
-    var dirty:Bool = false
+    
+    static let dirtyChangedNotification = Notification(name: NSNotification.Name("AccountDirtyValueChanges"),
+                                                         object: nil)
+    
+    var dirty:Bool = false{
+        didSet{
+            NotificationCenter.default.post(Account.dirtyChangedNotification)
+        }
+    }
     
     //MARK: Accessors & Settors
     var name:String?{

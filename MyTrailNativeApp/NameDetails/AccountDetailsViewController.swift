@@ -65,9 +65,20 @@ class AccountDetailsViewController: UIViewController {
         
         self.tableView.register(UINib(nibName: "AttributeDetailCell", bundle: nil),
                                 forCellReuseIdentifier: "AttributeDetailCell")
+        
+        // Save button enabling & Disabling configuration
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(dirtyValueChangedCheck),
+                                               name: Account.dirtyChangedNotification.name,
+                                               object: nil)
+        self.dirtyValueChangedCheck()
         // Do any additional setup after loading the view.
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -81,6 +92,8 @@ class AccountDetailsViewController: UIViewController {
 
         
         weak var weakSealf = self
+        
+        // Account Name
         let attributeAdapter = AccountAttributeAdapter(getTitleHandler: { () -> String in
                 return "Account Name"
         }, getValueHandler: { () -> String in
@@ -90,6 +103,18 @@ class AccountDetailsViewController: UIViewController {
         }
         let accountNameEntry = DetailEntry(attributeData: attributeAdapter)
         self.dataSourceModel.append(accountNameEntry)
+        
+        // Account Number
+        let adapterForAccNumber = AccountAttributeAdapter(getTitleHandler: { () -> String in
+            return "Account Number"
+        }, getValueHandler: { () -> String in
+            return weakSealf?.modelObject?.accountNumber ?? ""
+        }) { (stringVal) in
+            weakSealf?.modelObject?.accountNumber = stringVal
+        }
+        let accountNumberEntry = DetailEntry(attributeData: adapterForAccNumber)
+        self.dataSourceModel.append(accountNumberEntry)
+
     }
     
     /*
@@ -102,6 +127,21 @@ class AccountDetailsViewController: UIViewController {
     }
     */
 
+    //MARK: Save Button
+    func dirtyValueChangedCheck(){
+        if let model = self.modelObject, model.dirty{
+            self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save",
+                                                                     style: .plain,
+                                                                     target: self,
+                                                                     action: #selector(saveButtonClicked))
+        }else{
+            self.navigationItem.rightBarButtonItem = nil
+        }
+    }
+    
+    func saveButtonClicked(){
+        print("\(#function)")
+    }
 }
 
 extension AccountDetailsViewController:UITableViewDataSource{
