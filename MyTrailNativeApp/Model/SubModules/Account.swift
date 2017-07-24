@@ -15,13 +15,16 @@ class Account {
     static let soupName = "AccountSoup"
     //MARK: - Attribute constants.
     enum Attributes{
-        case Id, name, accountNumber
+        case Id, name, accountNumber, dirty
         
         var path: String{
             switch self {
             case .Id:               return "Id"
             case .name:             return "Name"
             case .accountNumber:    return "AccountNumber"
+                
+                // Custom locally created coloumns
+            case .dirty:            return "dirty"
             }
         }
         
@@ -36,6 +39,8 @@ class Account {
                 return kSoupIndexTypeFullText
                 return kSoupIndexTypeJSON1
                  */
+            case .dirty:
+                return kSoupIndexTypeInteger
             }
         }
     }
@@ -47,15 +52,19 @@ class Account {
     private var _Id: String?
     private var _name: String?
     private var _accountNumber: String?
-    
+    private var _dirty:Bool = false
     
     static let dirtyChangedNotification = Notification(name: NSNotification.Name("AccountDirtyValueChanges"),
                                                          object: nil)
-    
-    var dirty:Bool = false{
-        didSet{
-            self.storeValuesToStore(store: ModelInterface.instance.store)
+    var dirty:Bool{
+        get{
+            return _dirty
+        }
+        set{
+            self._dirty = newValue
             NotificationCenter.default.post(Account.dirtyChangedNotification)
+            self.storeValuesToStore(store: ModelInterface.instance.store)
+            
         }
     }
     
@@ -108,6 +117,12 @@ class Account {
                 indexSpecs.append(idIndex)
             }
             
+            
+            if let dirtyBit = SFSoupIndex(path: Account.Attributes.dirty.path,
+                                         indexType: Account.Attributes.dirty.type,
+                                         columnName: Account.Attributes.dirty.path){
+                indexSpecs.append(dirtyBit)
+            }
             
             if let nameIndex = SFSoupIndex(path: Account.Attributes.name.path,
                                         indexType: Account.Attributes.name.type,
@@ -173,7 +188,10 @@ class Account {
             return nil
         }
         _accountNumber = accountNumber
-
+        
+        if let dirtyNumber = accountInfoDict[Account.Attributes.dirty.path] as? NSNumber{
+            _dirty = dirtyNumber.boolValue
+        }
     }
     
     //MARK: Account -> JSON
@@ -182,6 +200,7 @@ class Account {
         accountFields[Account.Attributes.Id.path] = _Id
         accountFields[Account.Attributes.accountNumber.path] = _accountNumber
         accountFields[Account.Attributes.name.path] = _name
+        accountFields[Account.Attributes.dirty.path] = NSNumber(value:self.dirty)
         return accountFields
     }
     
