@@ -9,10 +9,52 @@
 import UIKit
 import SalesforceSDKCore
 
+//MARK: Account->Attribute adapter
+struct AccountAttributeAdapter{
+    typealias GetStringBlock = ()->String
+    typealias SetStringBlock = (String)->Void
+    
+    let getTitleHandler:GetStringBlock
+    let getValueHandler:GetStringBlock
+    let setValueHandler:SetStringBlock
+    init(getTitleHandler:@escaping GetStringBlock,
+         getValueHandler:@escaping GetStringBlock,
+         setValueHandler:@escaping SetStringBlock) {
+        self.getTitleHandler = getTitleHandler
+        self.getValueHandler = getValueHandler
+        self.setValueHandler = setValueHandler
+    }
+    
+}
+extension AccountAttributeAdapter:AttributeData{
+    var title: String{
+        get{
+            return self.getTitleHandler()
+        }
+    }
+    var value: String{
+        get{
+            return self.getValueHandler()
+        }
+        set{
+            self.setValueHandler(newValue)
+        }
+    }
+}
+
+
+//MARK: View Model Definition
+struct DetailEntry{
+    let attributeData:AccountAttributeAdapter
+}
+
 class AccountDetailsViewController: UIViewController {
 
     var accountNumber:String? = nil
     var accountInformationArray:[(key:String,value:String)] = []
+    
+    var modelObject: Account? = nil
+    var dataSourceModel: [DetailEntry] = []
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -20,6 +62,9 @@ class AccountDetailsViewController: UIViewController {
         super.viewDidLoad()
         self.initializeData()
         self.tableView.dataSource = self
+        
+        self.tableView.register(UINib(nibName: "AttributeDetailCell", bundle: nil),
+                                forCellReuseIdentifier: "AttributeDetailCell")
         // Do any additional setup after loading the view.
     }
 
@@ -31,8 +76,20 @@ class AccountDetailsViewController: UIViewController {
     //MARK:- Data initializing
     func initializeData(){
         //Here we use a query that should work on either Force.com or Database.com
-        let request = SFRestAPI.sharedInstance().request(forQuery:"SELECT Name,AccountNumber,OwnerId,Site,AccountSource,AnnualRevenue,BillingAddress FROM Account WHERE AccountNumber = '\(self.accountNumber!)' LIMIT 10");
-        SFRestAPI.sharedInstance().send(request, delegate: self);
+    //        let request = SFRestAPI.sharedInstance().request(forQuery:"SELECT Name,AccountNumber,OwnerId,Site,AccountSource,AnnualRevenue,BillingAddress FROM Account WHERE AccountNumber = '\(self.accountNumber!)' LIMIT 10");
+    //        SFRestAPI.sharedInstance().send(request, delegate: self);
+
+        
+        weak var weakSealf = self
+        let attributeAdapter = AccountAttributeAdapter(getTitleHandler: { () -> String in
+                return "Account Name"
+        }, getValueHandler: { () -> String in
+            return weakSealf?.modelObject?.name ?? ""
+        }) { (stringVal) in
+            weakSealf?.modelObject?.name = stringVal
+        }
+        let accountNameEntry = DetailEntry(attributeData: attributeAdapter)
+        self.dataSourceModel.append(accountNameEntry)
     }
     
     /*
@@ -52,12 +109,10 @@ extension AccountDetailsViewController:UITableViewDataSource{
         return 1
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "detail"){
-            let entry = self.accountInformationArray[indexPath.row]
-            
-            cell.textLabel?.text = entry.key
-            cell.detailTextLabel?.text = entry.value
-            
+        
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "AttributeDetailCell") as? AttributeDetailCell{
+            let entry = self.dataSourceModel[indexPath.row]
+            cell.attributeData = entry.attributeData
             return cell
         }else{
             return UITableViewCell()
@@ -65,51 +120,7 @@ extension AccountDetailsViewController:UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.accountInformationArray.count
+        return self.dataSourceModel.count
     }
 }
 
-//MARK: - SFDelegate
-extension AccountDetailsViewController:SFRestDelegate{
-    // MARK: - SFRestDelegate
-    func request(_ request: SFRestRequest, didLoadResponse jsonResponse: Any)
-    {
-        let records = (jsonResponse as! NSDictionary)["records"] as! [NSDictionary]
-        if let record = records.first{
-            for (key,value) in record{
-                self.accountInformationArray.append((key: key as! String, value: "\(value)"))
-            }
-        }
-        
-        DispatchQueue.main.async {
-            self.tableView.reloadData()
-        }
-        
-        print("\(#function): jsonResponse:\(jsonResponse)")
-        
-        /*
-        SFSDKLogger.sharedDefaultInstance().log(type(of:self), level:.debug, message:"request:didLoadResponse: #records: \(self.dataRows.count)")
-        DispatchQueue.main.async(execute: {
-            self.tableView.reloadData()
-        })
-         */
-    }
-    
-    func request(_ request: SFRestRequest, didFailLoadWithError error: Error)
-    {
-        SFSDKLogger.sharedDefaultInstance().log(type(of:self), level:.debug, message:"didFailLoadWithError: \(error)")
-        // Add your failed error handling here
-    }
-    
-    func requestDidCancelLoad(_ request: SFRestRequest)
-    {
-        SFSDKLogger.sharedDefaultInstance().log(type(of:self), level:.debug, message:"requestDidCancelLoad: \(request)")
-        // Add your failed error handling here
-    }
-    
-    func requestDidTimeout(_ request: SFRestRequest)
-    {
-        SFSDKLogger.sharedDefaultInstance().log(type(of:self), level:.debug, message:"requestDidTimeout: \(request)")
-        // Add your failed error handling here
-    }
-}

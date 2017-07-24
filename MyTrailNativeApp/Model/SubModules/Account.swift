@@ -40,11 +40,40 @@ class Account {
         }
     }
 
-    //MARK: - Attributes declarations.
-    var name: String?
-    var accountNumber: String?
-    
+    //MARK: Query
     static let getQuery: String = "SELECT Name,AccountNumber FROM Account"
+
+    //MARK: - Attributes declarations.
+    private var _name: String?
+    private var _accountNumber: String?
+    
+    var dirty:Bool = false
+    
+    //MARK: Accessors & Settors
+    var name:String?{
+        get{
+            return _name
+        }
+        set{
+            if _name != newValue{
+                self.dirty = true
+                self._name = newValue
+            }
+        }
+    }
+    
+    var accountNumber:String?{
+        get{
+            return _accountNumber
+        }
+        set{
+            if _name != newValue{
+                self.dirty = true
+                self._accountNumber = newValue
+            }
+        }
+    }
+
     
     //MARK: Soup Registering
     
@@ -101,12 +130,12 @@ class Account {
         guard let name = accountInfoDict[Account.Attributes.name.path] as? String else{
             return nil
         }
-        self.name = name
+        _name = name
         
         guard let accountNumber = accountInfoDict[Account.Attributes.accountNumber.path] as? String else{
             return nil
         }
-        self.accountNumber = accountNumber
+        _accountNumber = accountNumber
 
     }
     

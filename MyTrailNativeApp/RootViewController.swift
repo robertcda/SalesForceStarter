@@ -53,6 +53,12 @@ class RootViewController : UITableViewController, SFRestDelegate
         self.initializeRefreshBarButton()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.tableView.reloadData()
+    }
+    
     //MARK:- Store Inspector
     func launchStoreInspector(){
         // Start the Inspector.
@@ -165,7 +171,14 @@ class RootViewController : UITableViewController, SFRestDelegate
         
         // Configure the cell to show the data.
         let account = dataRows[indexPath.row]
-        cell!.textLabel!.text = account.name
+        var name:String = ""
+        if account.dirty{
+            name += "*"
+        }
+        if let accName = account.name{
+            name += accName
+        }
+        cell!.textLabel!.text = name
         cell?.detailTextLabel?.text = account.accountNumber
         // This adds the arrow to the right hand side.
         cell?.accessoryType = UITableViewCellAccessoryType.disclosureIndicator
@@ -179,6 +192,7 @@ class RootViewController : UITableViewController, SFRestDelegate
         if let detailView = storyBoard.instantiateInitialViewController() as? AccountDetailsViewController{
             self.navigationController?.pushViewController(detailView, animated: true)
             let account = dataRows[indexPath.row]
+            detailView.modelObject = account
             detailView.accountNumber = account.accountNumber
         }
         
