@@ -1,3 +1,4 @@
+
 //
 //  Account.swift
 //  MyTrailNativeApp
@@ -53,6 +54,7 @@ class Account {
     
     var dirty:Bool = false{
         didSet{
+            self.storeValuesToStore(store: ModelInterface.instance.store)
             NotificationCenter.default.post(Account.dirtyChangedNotification)
         }
     }
@@ -128,6 +130,17 @@ class Account {
             }
         }
     }
+    //MARK: storeValuesToStore
+    func storeValuesToStore(store:SFSmartStore){
+        do{
+            try store.upsertEntries([self.accountFields],
+                                    toSoup: Account.soupName,
+                                    withExternalIdPath: Account.Attributes.Id.path)
+        }catch let error{
+            print("\(#function):\(error)")
+        }
+    }
+    
     
     //MARK:-
     //MARK: JSON -> Account
@@ -164,7 +177,7 @@ class Account {
     }
     
     //MARK: Account -> JSON
-    private func accountFields() -> [String:Any]{
+    private var accountFields: [String:Any]{
         var accountFields = [String:Any]()
         accountFields[Account.Attributes.Id.path] = _Id
         accountFields[Account.Attributes.accountNumber.path] = _accountNumber
@@ -216,7 +229,7 @@ class Account {
         
         let updateRquest = restAPI.requestForUpdate(withObjectType: "Account",
                                                     objectId: Account.Attributes.Id.path,
-                                                    fields: self.accountFields())
+                                                    fields: self.accountFields)
         
         restAPI.send(updateRquest,
                      fail: { error in
