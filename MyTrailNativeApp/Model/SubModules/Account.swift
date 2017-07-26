@@ -15,7 +15,8 @@ class Account {
     static let soupName = "AccountSoup"
     //MARK: - Attribute constants.
     enum Attributes{
-        case Id, name, accountNumber, dirty
+        case Id, name, accountNumber, dirty, local
+        static let all = [Attributes.Id,Attributes.name,Attributes.dirty,Attributes.local]
         
         var path: String{
             switch self {
@@ -25,12 +26,15 @@ class Account {
                 
                 // Custom locally created coloumns
             case .dirty:            return "dirty"
+                
+                // required for Sync
+            case .local: return "__local__"
             }
         }
         
         var type: String{
             switch self {
-            case .name,.accountNumber,.Id:
+            case .name,.accountNumber,.Id,.local:
                 return kSoupIndexTypeString
                 /*
                 return kSoupIndexTypeInteger
@@ -52,7 +56,13 @@ class Account {
     private var _Id: String?
     private var _name: String?
     private var _accountNumber: String?
+    
+    // Local variable
     private var _dirty:Bool = false
+    
+    // Required for Sync
+    private var _local:String?
+    
     
     static let dirtyChangedNotification = Notification(name: NSNotification.Name("AccountDirtyValueChanges"),
                                                          object: nil)
@@ -225,15 +235,13 @@ class Account {
                         print("Account:\(#function): CompletionBlock")
                         if let responseDict = response as? [String:Any],
                             let records = responseDict["records"] as? [[String:Any]]{
-                            for record in records{
-                                do {
-                                    try store.upsertEntries([record],
-                                                                 toSoup: Account.soupName,
-                                                                 withExternalIdPath: Account.Attributes.accountNumber.path)
-                                }catch let error{
-                                    print("\(#function): error:\(error):")
-                                }
-                                
+                            do {
+                                let arrayOfUpsertedEntries = try store.upsertEntries(records,
+                                                        toSoup: Account.soupName,
+                                                        withExternalIdPath: Account.Attributes.accountNumber.path)
+                                print("arrayOfUpsertedEntries:\(arrayOfUpsertedEntries)")
+                            }catch let error{
+                                print("\(#function): error:\(error):")
                             }
                         }
                         completion()

@@ -40,6 +40,10 @@ class AppDelegate : UIResponder, UIApplicationDelegate
     init()
     {
         super.init()
+        
+        //For SmartSync
+        SalesforceSDKManager.setInstanceClass(SalesforceSDKManagerWithSmartStore.self)
+        
         SalesforceSDKManager.shared().connectedAppId = RemoteAccessConsumerKey
         SalesforceSDKManager.shared().connectedAppCallbackUri = OAuthRedirectURI
         SalesforceSDKManager.shared().authScopes = ["web", "api"];

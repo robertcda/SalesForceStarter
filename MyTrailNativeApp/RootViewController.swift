@@ -109,10 +109,23 @@ class RootViewController : UITableViewController, SFRestDelegate
     }
     func refresh(){
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
+        
+        
+        // With Sync Manager
+        ModelInterface.instance.updateRemoteData {
+            ModelInterface.instance.refreshRemoteData{
+                self.initializeAccountsModel()
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            }
+        }
+        
+        /*
+         // Without Sync Manager
         ModelInterface.instance.reloadAccountsFromNetwork {
             self.initializeAccountsModel()
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
         }
+         */
     }
     /*
     // MARK: - SFRestDelegate
