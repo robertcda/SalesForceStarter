@@ -74,8 +74,8 @@ class ModelInterface{
             }
         }
         
-        var syncDownTarget = SFSoqlSyncDownTarget.newSyncTarget(Account.getQuery)
-        var syncOptions = SFSyncOptions.newSyncOptions(forSyncDown: .leaveIfChanged)
+        let syncDownTarget = SFSoqlSyncDownTarget.newSyncTarget(Account.getQuery)
+        let syncOptions = SFSyncOptions.newSyncOptions(forSyncDown: .leaveIfChanged)
         
         if syncID == 0{
             self.syncManager.syncDown(with: syncDownTarget,
@@ -101,7 +101,7 @@ class ModelInterface{
             }
         }
         
-        var syncOptions = SFSyncOptions.newSyncOptions(forSyncUp: Account.Attributes.all.map{$0.path},
+        let syncOptions = SFSyncOptions.newSyncOptions(forSyncUp: Account.Attributes.all.map{$0.path},
                                                        mergeMode: .overwrite)
         self.syncManager.syncUp(with: syncOptions,
                                 soupName: Account.soupName,
